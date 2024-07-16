@@ -1,0 +1,11 @@
+yield {"price":response.xpath("//span[@itemprop='price']").get(),
+               "description":response.xpath("//div[@itemprop='description']/a/p/text()").get(),
+               "lien_produit":response.xpath("//div[@itemprop='description']/a/@href").get(),
+               "name":response.css(".item-product.col-xs-12").css(".h3.product-title").css("a:text").get(default="N/A"),
+               "image_url":response.xpath("//div[contains(@class, 'wb-image-block') and contains(@class, 'col-lg-3') and contains(@class, 'col-xl-3') and contains(@class, 'col-md-4') and contains(@class, 'col-sm-4') and contains(@class, 'col-xs-6')]/a/img[contains(@class, 'center')]").get(),
+               "offre" :
+
+
+
+
+               }

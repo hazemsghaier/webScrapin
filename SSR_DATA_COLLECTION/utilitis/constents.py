@@ -1,0 +1,2 @@
+valid_proxy_path=r"C:\Users\PCS\Desktop\data_collection\data-collection\SSR_DATA_COLLECTION\SSR_DATA_COLLECTION\static\valid_proxy.txt"
+non_valid_file_path=r"C:/Users/PCS/Desktop/data_collection/data-collection/SSR_DATA_COLLECTION/SSR_DATA_COLLECTION\static/proxylist_geonode.txt"
