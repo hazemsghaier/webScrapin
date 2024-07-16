@@ -25,9 +25,11 @@ class JumiaProduct(Item):
 class TunisiaNetProduct(Item):
     price=Field()
     description=Field()
+    brand=Field()
     lien_produit=Field()
     name=Field()
     image_url=Field()
     regular_price=Field()
     discount=Field()
     stock_availability=Field()
+    category=Field()

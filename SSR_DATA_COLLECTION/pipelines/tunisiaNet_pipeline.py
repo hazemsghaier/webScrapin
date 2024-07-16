@@ -17,7 +17,10 @@ class TunisiaNet_pipeline :
             item_adapter=ItemAdapter(item)
             description=item_adapter.get("description")
             desc=self.description_filter(description)
+            title=item_adapter.get("name")
+            brand=item_adapter.get("brand")
             print(self.get_garantie(desc))
+            print(self.get_offre(desc))
             #extraction du brand
             #extraction du model
             #extraction du garantie
@@ -33,23 +36,28 @@ class TunisiaNet_pipeline :
                 ch=ch+desc
                 continue
         return ch    
-
-                
-
-
-        
-        
-    def get_brand(self,data) :
-        pass
+    
     def get_garantie(self,description) :
-        garantie_pattern=re.compile(r"Garantie.*\d.*(ans|an)")
+        garantie_pattern=re.compile(r"Garantie.*(\d)+.*(ans|an|mois)")
         garantie=garantie_pattern.search(description)
         if garantie :
-            return garantie.group()
+            if garantie.group(2)=="mois":
+                return int(garantie.group(1))
+            else :
+                return  int(garantie.group(1)*12)
         else:
-            return "sans garantie"
+            return 0
         
-    def get_offre(self,data) :
-        pass
+    def get_offre(self,desc) :
+        offre_pattern = re.compile(r"Garantie.*\d.*(ans|an).*?(avec|\+).*?(.*)", re.IGNORECASE)
+        match = offre_pattern.search(desc)
+        if match:
+          offre = match.group(3).strip()
+          #to clear the description from unneeded information
+          modified_text = desc[:match.start(3)] + desc[match.end(3):]
+          offre=offre.split("+")
+          return offre
+        else:
+          return "no offer"
     def add_to_csv(self,data):
         pass

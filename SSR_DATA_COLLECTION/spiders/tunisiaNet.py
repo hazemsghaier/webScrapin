@@ -12,23 +12,17 @@ class TunisianetSpider(scrapy.Spider):
         s = 0
         for i in categories:
             if s < 5:
-                print("=======================================================-")
                 yield response.follow(i, self.parse_product)
                 s += 1
             else:
-                print("22222222222222222222222222222")
                 break
                  
           
 
     def parse_product(self, response):
-        print("111111111111111111111111111111111111111111111111")
         articles = response.xpath("//article[contains(@class, 'product-miniature') and contains(@class, 'js-product-miniature')]")
-        print(len(articles))
         if response.url=="https://www.tunisianet.com.tn/681-pc-portable-gamer" :
             for article in articles:
-                print(response.url)
-
                 tunisia_net=TunisiaNetProduct()
                 tunisia_net["price"]=article.xpath(".//span[@itemprop='price']/text()").get(default="N/A")
                 tunisia_net["description"]=article.css("div[id^='product-description-short-'] *::text").getall()
@@ -38,4 +32,6 @@ class TunisianetSpider(scrapy.Spider):
                 tunisia_net["regular_price"]=article.xpath(".//span[@class='regular-price']/text()").get(default="N/A")
                 tunisia_net["discount"]= article.css("span.discount-amount::text").get(default="N/A")
                 tunisia_net["stock_availability"]=article.css("#stock_availability").css("span::text").get(default="N/A")
+                tunisia_net["brand"]=article.xpath(".//div[@class='product-manufacturer']/a/img/@alt").get(default="N/A")
+                tunisia_net["category"]=response.xpath('//nav[@class="breadcrumb col-xs-12"]/ol/li/a/span/@text').getall()
                 yield tunisia_net
