@@ -92,3 +92,6 @@ venv.bak/
 selenium-screenshots/
 geckodriver.log
 chromedriver.log
+*.jpg binary
+*.png binary
+*.json text eol=lf
