@@ -1,30 +1,41 @@
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 import re
+import csv
 
 class TunisiaNet_pipeline :
     def __init__(self,spider_name) :
         self.spider_name=spider_name
+        self.tunisiaNet=None
+        self.file=None
     @classmethod
     def from_crawler(cls,crawler):
         spider_name=crawler.spider.name
         return cls(spider_name)
     def open_spider(self,spider):
-        pass
+        if "tunisiaNet"==self.spider_name:
+            self.file=open(r"C:\Users\PCS\Desktop\data_collection\data-collection\SSR_DATA_COLLECTION\SSR_DATA_COLLECTION\static\tunisiaNet.csv","w", encoding='utf-8')
+            fieldnames=["price","description","lien_produit","name","image_url","regular_price","discount","stock_availability","brand","category","offre","garantie"]
+            self.tunisiaNet=csv.DictWriter(self.file,fieldnames=fieldnames)
+            self.tunisiaNet.writeheader()      
+      
     def process_item(self,item,spider):
         if self.spider_name=="tunisiaNet" and item != None :
-            #filtrage et concatination du description
             item_adapter=ItemAdapter(item)
             description=item_adapter.get("description")
             desc=self.description_filter(description)
-            title=item_adapter.get("name")
-            brand=item_adapter.get("brand")
-            print(self.get_garantie(desc))
-            print(self.get_offre(desc))
-            #extraction du brand
-            #extraction du model
-            #extraction du garantie
-            #extraction du offre du plus
+            desc=desc.strip()
+            item_dict = dict(item)
+            item_dict["price"]=item_dict["price"].replace("\xa0","")
+            garantie=self.get_garantie(desc)
+            offre=self.get_offre(desc)
+            desc=desc.replace(offre,"")
+            item_dict["description"]=desc
+            item_dict["garantie"]=garantie
+            item_dict["offre"]=offre
+            item_dict["description"]=item_dict["description"].replace("\xa0","")
+            item_dict["regular_price"]=item_dict["regular_price"].replace("\xa0","")
+            self.tunisiaNet.writerow(item_dict)
         else :
             return item
     def description_filter(self,description):
@@ -36,7 +47,7 @@ class TunisiaNet_pipeline :
                 ch=ch+desc
                 continue
         return ch    
-    
+    #extraction de garantie de le produit a partir du description
     def get_garantie(self,description) :
         garantie_pattern=re.compile(r"Garantie.*(\d)+.*(ans|an|mois)")
         garantie=garantie_pattern.search(description)
@@ -44,20 +55,17 @@ class TunisiaNet_pipeline :
             if garantie.group(2)=="mois":
                 return int(garantie.group(1))
             else :
-                return  int(garantie.group(1)*12)
+                return  int(garantie.group(1))*12
         else:
             return 0
-        
+    #extraction des offre du plus de le produit a partir du description
     def get_offre(self,desc) :
         offre_pattern = re.compile(r"Garantie.*\d.*(ans|an).*?(avec|\+).*?(.*)", re.IGNORECASE)
         match = offre_pattern.search(desc)
         if match:
           offre = match.group(3).strip()
-          #to clear the description from unneeded information
-          modified_text = desc[:match.start(3)] + desc[match.end(3):]
-          offre=offre.split("+")
           return offre
         else:
           return "no offer"
-    def add_to_csv(self,data):
-        pass
+    def close_spider(self,spider) :
+        self.file.close()

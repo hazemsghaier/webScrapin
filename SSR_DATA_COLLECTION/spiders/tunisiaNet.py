@@ -33,5 +33,5 @@ class TunisianetSpider(scrapy.Spider):
                 tunisia_net["discount"]= article.css("span.discount-amount::text").get(default="N/A")
                 tunisia_net["stock_availability"]=article.css("#stock_availability").css("span::text").get(default="N/A")
                 tunisia_net["brand"]=article.xpath(".//div[@class='product-manufacturer']/a/img/@alt").get(default="N/A")
-                tunisia_net["category"]=response.xpath('//nav[@class="breadcrumb col-xs-12"]/ol/li/a/span/@text').getall()
+                tunisia_net["category"]=response.xpath('//nav[@class="breadcrumb col-xs-12"]/ol/li/a/span/text()').getall()
                 yield tunisia_net
