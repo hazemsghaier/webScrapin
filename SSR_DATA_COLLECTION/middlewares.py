@@ -145,8 +145,11 @@ class spiderFakeHeadersMiddleware:
     def process_request(self,request,spider):
         if self.proxy_activated == True :
             request.meta["proxy"]="http://"+self.get_random_proxy()
+            
         if self.valid_header==False:
+            print("111111111111111111111111111111111111111111111111111111111")
             random_header=self.get_random_header()
+            print(random_header)
             self.header_list=random_header
             request.headers["upgrade-insecure-requests"]=random_header["upgrade-insecure-requests"]
             request.headers["user-agent"]=random_header["user-agent"]

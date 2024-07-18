@@ -26,7 +26,16 @@ class TunisiaNet_pipeline :
             desc=self.description_filter(description)
             desc=desc.strip()
             item_dict = dict(item)
-            item_dict["price"]=item_dict["price"].replace("\xa0","")
+            item_dict["price"]=float(item_dict["price"].replace("\xa0","").replace("DT","").strip().replace(",","."))
+            if item_dict["regular_price"] != "N/A":
+                item_dict["regular_price"]=float(item_dict["regular_price"].replace("\xa0","").replace("DT","").strip().replace(",","."))
+            else:
+                item_dict["regular_price"]=-1.0
+
+            if item_dict["discount"] != "N/A":
+                item_dict["discount"]=float(item_dict["discount"].replace("\xa0","").replace("DT","").strip().replace(",","."))
+            else:
+                item_dict["discount"]=0    
             garantie=self.get_garantie(desc)
             offre=self.get_offre(desc)
             desc=desc.replace(offre,"")
@@ -34,8 +43,8 @@ class TunisiaNet_pipeline :
             item_dict["garantie"]=garantie
             item_dict["offre"]=offre
             item_dict["description"]=item_dict["description"].replace("\xa0","")
-            item_dict["regular_price"]=item_dict["regular_price"].replace("\xa0","")
             self.tunisiaNet.writerow(item_dict)
+            return item
         else :
             return item
     def description_filter(self,description):
@@ -46,6 +55,7 @@ class TunisiaNet_pipeline :
             else:
                 ch=ch+desc
                 continue
+            ch.replace("‎","")
         return ch    
     #extraction de garantie de le produit a partir du description
     def get_garantie(self,description) :
@@ -68,4 +78,5 @@ class TunisiaNet_pipeline :
         else:
           return "no offer"
     def close_spider(self,spider) :
-        self.file.close()
+                if "tunisiaNet"==self.spider_name:
+                     self.file.close()

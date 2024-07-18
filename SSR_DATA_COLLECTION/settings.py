@@ -20,7 +20,7 @@ DEPTH_LIMIT=400
 ROBOTSTXT_OBEY = False
 CLOSESPIDER_TIMEOUT = 900
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 30
+CONCURRENT_REQUESTS = 15
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -67,7 +67,10 @@ RETRY_TIMES = 30
 ITEM_PIPELINES = {
     #"SSR_DATA_COLLECTION.pipelines.SsrDataCollectionPipeline": 300,
      "SSR_DATA_COLLECTION.pipelines.jumia_pipeline.JumiaDataProcess": 299,
-     "SSR_DATA_COLLECTION.pipelines.tunisiaNet_pipeline.TunisiaNet_pipeline":255
+     "SSR_DATA_COLLECTION.pipelines.tunisiaNet_pipeline.TunisiaNet_pipeline":255,
+     "SSR_DATA_COLLECTION.pipelines.MyTek_pipeline.MyTek":254
+
+
 
 }
 
@@ -98,4 +101,4 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 SCRAPOPS_API_KEY="b3eea763-e6d4-4f13-8fab-61e9a7647ff8"
 SCRAPOPS_ENDPOINT="https://headers.scrapeops.io/v1/browser-headers"
-NUMBER_OF_REQUEST=5000
+NUMBER_OF_REQUEST=50
